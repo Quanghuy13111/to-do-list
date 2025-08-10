@@ -2,36 +2,50 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>To-Do List - Việc cần làm</title>
+  <title>To-Do List Đơn Giản</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-    }
-  </style>
 </head>
 <body class="bg-light">
   <div class="container py-5">
     <div class="row justify-content-center">
-      <div class="col-md-6">
+      <div class="col-md-8">
         <div class="card shadow rounded-4">
           <div class="card-body">
-            <h3 class="card-title text-center mb-4">📝 Danh sách việc cần làm</h3>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <!-- Danh sách việc chưa làm -->
+              <div id="todo-section">
+                <h5 class="mb-3">📋 Việc cần làm</h5>
+                <ul id="todo-list" class="list-group mb-3"></ul>
+              </div>
+
+              <!-- Danh sách đã hoàn thành -->
+              <div id="completed-section">
+                <h5 class="mb-3">✅ Đã hoàn thành</h5>
+                <ul id="completed-list" class="list-group mb-3"></ul>
+              </div>
+              <button id="theme-toggle" class="btn btn-sm btn-secondary" onclick="toggleDarkMode()">🌙</button>
+            </div>
+
             <div class="input-group mb-3">
               <input type="text" id="todo-input" class="form-control rounded-start-pill" placeholder="Nhập việc cần làm...">
               <button class="btn btn-primary rounded-end-pill" onclick="addTodo()">Thêm</button>
             </div>
-            <ul id="todo-list" class="list-group list-group-flush"></ul>
+
+            <ul id="todo-list" class="list-group mb-3"></ul>
+
+            <div class="d-flex justify-content-between">
+              <small id="remaining-count"></small>
+              <button class="btn btn-sm btn-danger" onclick="clearAll()">Xoá tất cả</button>
+            </div>
+
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Bootstrap Icons -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

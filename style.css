@@ -1,3 +1,9 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+  background-color: #ffffff;
+}
+
 .completed {
   text-decoration: line-through;
   color: gray;
@@ -6,4 +12,64 @@
 .list-group-item:hover {
   background-color: #f8f9fa;
   transition: background-color 0.2s;
+  cursor: pointer;
 }
+
+.dark-mode {
+  background-color: #121212 !important;
+  color: #f1f1f1 !important;
+}
+
+.dark-mode .card {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+}
+
+.dark-mode .list-group-item {
+  background-color: #1e1e1e;
+  color: #f1f1f1;
+}
+
+.dark-mode input {
+  background-color: #333;
+  color: #f1f1f1;
+  border: 1px solid #666;
+}
+
+.dark-mode .btn-primary {
+  background-color: #0d6efd;
+}
+
+.dark-mode input::placeholder {
+  color: #cccccc;
+
+}
+.dark-mode #remaining-count {
+  color: #cccccc;
+}
+
+/* Nổi bật phần việc chưa hoàn thành */
+#todo-section {
+  border: 2px solid #007bff;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+/* Phân biệt danh sách hoàn thành */
+#completed-section {
+  background-color: #f1f1f1;
+  border: 2px dashed #28a745;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+#completed-section h5 {
+  color: #28a745;
+}
+
+.completed-item {
+  background-color: #e2f4e2;
+  color: #333;
+}
+
