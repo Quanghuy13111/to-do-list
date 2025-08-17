@@ -3,6 +3,39 @@ body {
   transition: background-color 0.3s, color 0.3s;
   background-color: #ffffff;
 }
+/* Chỉ transition màu, KHÔNG transition kích thước/viền để tránh khựng */
+body, .card, .list-group-item, #todo-section, #completed-section {
+  transition: background-color .3s ease, color .3s ease;
+}
+
+
+/* Hiệu ứng fade toàn trang khi đổi theme */
+body.fade-transition {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+body.dark-mode {
+  background-color: #121212 !important;
+  color: white;
+}
+
+body.dark-mode .card {
+  background-color: #1e1e1e;
+  color: white;
+}
+
+body.dark-mode .list-group-item {
+  background-color: #2a2a2a;
+  color: white;
+}
+
+/* Header sections */
+body.dark-mode #todo-section,
+body.dark-mode #completed-section {
+  background-color: transparent;
+  color: white;
+}
 
 .completed {
   text-decoration: line-through;
@@ -48,28 +81,76 @@ body {
   color: #cccccc;
 }
 
-/* Nổi bật phần việc chưa hoàn thành */
+.dark-mode #completed-section {
+  background-color: #1e1e1e !important;
+  border-color: #4caf50 !important;
+}
+
+.dark-mode .completed-item {
+  background-color: #1e1e1e !important;
+  color: #4caf50 !important;
+}
+
+body.dark-mode {
+  background-color: #121212 !important;
+  color: white;
+}
+
+body.dark-mode .card {
+  background-color: #1e1e1e;
+  color: white;
+}
+
+body.dark-mode .list-group-item {
+  background-color: #2a2a2a;
+  color: white;
+}
+
+/* Light mode */
 #todo-section {
-  border: 2px solid #007bff;
+  border: 2px dashed #007bff;
   border-radius: 10px;
   padding: 15px;
   margin-bottom: 20px;
 }
 
-/* Phân biệt danh sách hoàn thành */
 #completed-section {
-  background-color: #f1f1f1;
+  background-color: #ffffff;
   border: 2px dashed #28a745;
   border-radius: 10px;
   padding: 15px;
+  margin-bottom: 20px;
 }
 
-#completed-section h5 {
-  color: #28a745;
+
+
+/* Dark mode */
+.dark-mode #todo-section {
+  border: 2px dashed #0d6efd; /* xanh sáng hơn cho dễ nhìn */
 }
 
-.completed-item {
-  background-color: #e2f4e2;
-  color: #333;
+.dark-mode #completed-section {
+  border-color: #1db954;
 }
+
+  
+/* Mặc định tắt transition */
+.no-transition * {
+  transition: none !important;
+}
+
+/* Giữ vị trí layout ổn định khi đổi theme (không nhảy trái/phải) */
+:root {
+  scrollbar-gutter: stable both-edges; 
+}
+
+/* Fallback cho trình duyệt cũ: luôn dành chỗ cho scrollbar */
+html {
+  overflow-y: scroll;
+}
+
+#completed-section .d-flex {
+  align-items: center;
+}
+
 

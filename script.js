@@ -54,21 +54,21 @@ function addTodo() {
 function toggleComplete(index) {
   todos[index].completed = !todos[index].completed;
   renderTodos();
-}
+} //add to do
 
 
 
 function removeTodo(index) {
   todos.splice(index, 1);
   renderTodos();
-}
+} //xóa todo
 
 function clearAll() {
   if (confirm("Bạn có chắc muốn xoá tất cả?")) {
     todos = [];
     renderTodos();
   }
-}
+} // xóa hết
 
 function updateCount() {
   const count = todos.filter(t => !t.completed).length;
@@ -76,8 +76,59 @@ function updateCount() {
 }
 
 function toggleDarkMode() {
-  document.body.classList.toggle("dark-mode");
+    // Fade out trước
+    document.body.classList.add('fade-transition');
+    
+    setTimeout(() => {
+        document.body.classList.toggle('dark-mode');
+
+        const btn = document.getElementById('theme-toggle');
+        if (document.body.classList.contains('dark-mode')) {
+            btn.textContent = '☀';
+            localStorage.setItem('theme', 'dark');
+        } else {
+            btn.textContent = '🌙';
+            localStorage.setItem('theme', 'light');
+        }
+
+        // Fade in lại
+        requestAnimationFrame(() => {
+            document.body.classList.remove('fade-transition');
+        });
+    }, 200); // thời gian fade out
 }
+
+window.onload = function() {
+    const savedTheme = localStorage.getItem('theme');
+    const btn = document.getElementById('theme-toggle');
+
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        btn.textContent = '☀';
+    } else {
+        btn.textContent = '🌙';
+    }
+
+    // Sau khi trang load xong 50ms, bật lại transition
+    setTimeout(() => {
+        document.body.classList.remove('no-transition');
+    }, 50);
+}; //đổi màu
+
+// Khi đổi theme
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+
+    const btn = document.getElementById('theme-toggle');
+    if (document.body.classList.contains('dark-mode')) {
+        btn.textContent = '☀';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        btn.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+    }
+}// đổi theme
+
 
 document.getElementById("todo-input").addEventListener("keydown", function (event) {
   if (event.key === "Enter") {
