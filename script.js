@@ -135,5 +135,36 @@ document.getElementById("todo-input").addEventListener("keydown", function (even
     addTodo();
   }
 });
+// Tắt transition khi load lại (F5)
+document.documentElement.classList.add("no-transition");
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    document.documentElement.classList.remove("no-transition");
+  }, 50);
+});
+
+// Nút toggle theme
+function toggleTheme() {
+  document.documentElement.classList.toggle("dark-mode");
+  if (document.documentElement.classList.contains("dark-mode")) {
+    localStorage.setItem("theme", "dark");
+  } else {
+    localStorage.setItem("theme", "light");
+  }
+}
+
+
+  // Áp theme từ localStorage ngay khi load
+  (function() {
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark-mode");
+    }
+  })();
+
+  if (localStorage.getItem("theme") === "dark") {
+    document.documentElement.classList.add("dark-mode");
+  }
+
 
 renderTodos();

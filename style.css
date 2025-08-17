@@ -2,11 +2,13 @@ body {
   font-family: 'Poppins', sans-serif;
   transition: background-color 0.3s, color 0.3s;
   background-color: #ffffff;
+  color: black;
 }
 /* Chỉ transition màu, KHÔNG transition kích thước/viền để tránh khựng */
 body, .card, .list-group-item, #todo-section, #completed-section {
-  transition: background-color .3s ease, color .3s ease;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
+
 
 
 /* Hiệu ứng fade toàn trang khi đổi theme */
@@ -17,7 +19,7 @@ body.fade-transition {
 
 body.dark-mode {
   background-color: #121212 !important;
-  color: white;
+  color: white !important;
 }
 
 body.dark-mode .card {
@@ -133,9 +135,9 @@ body.dark-mode .list-group-item {
   border-color: #1db954;
 }
 
-  
-/* Mặc định tắt transition */
-.no-transition * {
+/* Khi tắt transition (reload) */
+.no-transition *, 
+.no-transition {
   transition: none !important;
 }
 
