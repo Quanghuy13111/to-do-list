@@ -4,14 +4,8 @@ body {
   background-color: #ffffff;
   color: black;
 }
-/* Chỉ transition màu, KHÔNG transition kích thước/viền để tránh khựng */
-body, .card, .list-group-item, #todo-section, #completed-section {
-  transition: background-color 0.4s ease, color 0.4s ease;
-}
 
-
-
-/* Hiệu ứng fade toàn trang khi đổi theme */
+/* Fade khi đổi theme */
 body.fade-transition {
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -32,13 +26,6 @@ body.dark-mode .list-group-item {
   color: white;
 }
 
-/* Header sections */
-body.dark-mode #todo-section,
-body.dark-mode #completed-section {
-  background-color: transparent;
-  color: white;
-}
-
 .completed {
   text-decoration: line-through;
   color: gray;
@@ -50,65 +37,7 @@ body.dark-mode #completed-section {
   cursor: pointer;
 }
 
-.dark-mode {
-  background-color: #121212 !important;
-  color: #f1f1f1 !important;
-}
-
-.dark-mode .card {
-  background-color: #1e1e1e;
-  color: #f1f1f1;
-}
-
-.dark-mode .list-group-item {
-  background-color: #1e1e1e;
-  color: #f1f1f1;
-}
-
-.dark-mode input {
-  background-color: #333;
-  color: #f1f1f1;
-  border: 1px solid #666;
-}
-
-.dark-mode .btn-primary {
-  background-color: #0d6efd;
-}
-
-.dark-mode input::placeholder {
-  color: #cccccc;
-
-}
-.dark-mode #remaining-count {
-  color: #cccccc;
-}
-
-.dark-mode #completed-section {
-  background-color: #1e1e1e !important;
-  border-color: #4caf50 !important;
-}
-
-.dark-mode .completed-item {
-  background-color: #1e1e1e !important;
-  color: #4caf50 !important;
-}
-
-body.dark-mode {
-  background-color: #121212 !important;
-  color: white;
-}
-
-body.dark-mode .card {
-  background-color: #1e1e1e;
-  color: white;
-}
-
-body.dark-mode .list-group-item {
-  background-color: #2a2a2a;
-  color: white;
-}
-
-/* Light mode */
+/* Light mode sections */
 #todo-section {
   border: 2px dashed #007bff;
   border-radius: 10px;
@@ -117,42 +46,51 @@ body.dark-mode .list-group-item {
 }
 
 #completed-section {
-  background-color: #ffffff;
   border: 2px dashed #28a745;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: transparent;
+}
+
+#history-section {
+  border: 2px dashed #6c757d;
   border-radius: 10px;
   padding: 15px;
   margin-bottom: 20px;
 }
 
-
-
-/* Dark mode */
+/* Dark mode borders */
 .dark-mode #todo-section {
-  border: 2px dashed #0d6efd; /* xanh sáng hơn cho dễ nhìn */
+  border: 2px dashed #0d6efd;
 }
 
 .dark-mode #completed-section {
   border-color: #1db954;
 }
 
-/* Khi tắt transition (reload) */
+.dark-mode #history-section {
+  border-color: #aaaaaa;
+}
+
+/* Khoảng cách giữa các nút */
+.list-group-item .btn {
+  margin-left: 6px;
+}
+.list-group-item .btn:first-child {
+  margin-left: 0;
+}
+
+/* Tắt transition khi reload */
 .no-transition *, 
 .no-transition {
   transition: none !important;
 }
 
-/* Giữ vị trí layout ổn định khi đổi theme (không nhảy trái/phải) */
+/* Scrollbar ổn định */
 :root {
   scrollbar-gutter: stable both-edges; 
 }
-
-/* Fallback cho trình duyệt cũ: luôn dành chỗ cho scrollbar */
 html {
   overflow-y: scroll;
 }
-
-#completed-section .d-flex {
-  align-items: center;
-}
-
-
