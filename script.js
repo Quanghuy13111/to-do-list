@@ -66,6 +66,7 @@ function renderTodos() {
   updateCount();
   updateProgress();
   saveTodos();
+  initDragDrop(); // Re-init drag & drop after render
 }
 
 // History
@@ -182,7 +183,7 @@ function toggleDarkMode(){
   localStorage.setItem("theme", document.body.classList.contains("dark-mode")?"dark":"light");
 }
 
-// ==== Toast Notification ====
+// Toast Notification
 function showToast(msg){
   const toastEl = document.getElementById("deadline-toast");
   document.getElementById("toast-message").textContent = msg;
@@ -201,7 +202,7 @@ function checkDeadlines(){
   });
 }
 
-// ==== Event Listeners ====
+// Event Listeners
 document.getElementById("todo-input").addEventListener("keydown", e=>{
   if(e.key==="Enter") addTodo();
 });
@@ -211,35 +212,28 @@ document.getElementById("todo-deadline").addEventListener("keydown", e=>{
 document.getElementById("filter-todo").addEventListener("change", renderTodos);
 document.getElementById("search-todo").addEventListener("input", renderTodos);
 
-// ==== Drag & Drop ====
+// Drag & Drop
 function initDragDrop(){
-  let dragSrc=null;
-  function handleDragStart(e){ dragSrc=e.target; e.dataTransfer.effectAllowed="move"; }
-  function handleDragOver(e){ e.preventDefault(); e.dataTransfer.dropEffect="move"; }
-  function handleDrop(e){
-    e.stopPropagation();
-    if(dragSrc!==this){
-      const srcIdx=parseInt(dragSrc.dataset.index,10);
-      const tgtIdx=parseInt(this.dataset.index,10);
-      const temp = todos[srcIdx];
-      todos.splice(srcIdx,1);
-      todos.splice(tgtIdx,0,temp);
-      renderTodos();
-    }
-  }
-  function addDnD(li){
-    li.setAttribute("draggable",true);
-    li.addEventListener("dragstart", handleDragStart);
-    li.addEventListener("dragover", handleDragOver);
-    li.addEventListener("drop", handleDrop);
-  }
   const lists = [document.getElementById("todo-list"), document.getElementById("completed-list")];
   lists.forEach(list=>{
-    list.querySelectorAll("li").forEach(addDnD);
+    list.querySelectorAll("li").forEach(li=>{
+      li.setAttribute("draggable", true);
+      li.ondragstart = e => { e.dataTransfer.setData("text/plain", li.dataset.index); };
+      li.ondragover = e => { e.preventDefault(); };
+      li.ondrop = e => {
+        e.preventDefault();
+        const srcIdx = parseInt(e.dataTransfer.getData("text/plain"),10);
+        const tgtIdx = parseInt(li.dataset.index,10);
+        const temp = todos[srcIdx];
+        todos.splice(srcIdx,1);
+        todos.splice(tgtIdx,0,temp);
+        renderTodos();
+      };
+    });
   });
 }
 
-// ==== Init ====
+// Init
 window.onload = ()=>{
   if(localStorage.getItem("theme")==="dark"){
     document.body.classList.add("dark-mode");
