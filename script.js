@@ -25,6 +25,7 @@ function renderTodos(){
   todos.forEach((todo,i)=>{
     const li=document.createElement("li");
     li.className="list-group-item d-flex justify-content-between align-items-center";
+    li.className = "list-group-item d-flex justify-content-between align-items-center todo-item";
 
     let deadlineHTML="";
     if(todo.deadline){
