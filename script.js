@@ -2,219 +2,169 @@ let todos = JSON.parse(localStorage.getItem("todos")) || [];
 let history = JSON.parse(localStorage.getItem("history")) || [];
 let editIndex = null;
 
-// Render danh sách
-function renderTodos() {
+/* ---- Helpers ---- */
+function saveTodos(){ localStorage.setItem("todos", JSON.stringify(todos)); }
+function saveHistory(){ localStorage.setItem("history", JSON.stringify(history)); }
+
+/* ---- Dọn lịch sử >14 ngày ---- */
+function cleanupHistory(){
+  const now = new Date();
+  history = history.filter(item=>{
+    const d = new Date(item.time);
+    return (now - d)/(1000*60*60*24) <= 14;
+  });
+  saveHistory();
+}
+
+/* ---- Render Todos ---- */
+function renderTodos(){
   const todoList = document.getElementById("todo-list");
   const completedList = document.getElementById("completed-list");
+  todoList.innerHTML = completedList.innerHTML = "";
 
-  todoList.innerHTML = "";
-  completedList.innerHTML = "";
+  todos.forEach((todo,i)=>{
+    const li=document.createElement("li");
+    li.className="list-group-item d-flex justify-content-between align-items-center";
 
-  todos.forEach((todo, index) => {
-    const li = document.createElement("li");
-    li.className = "list-group-item d-flex justify-content-between align-items-center";
-
-    // deadline
-    let deadlineHTML = "";
-    if (todo.deadline) {
-      const now = new Date();
-      const deadlineDate = new Date(todo.deadline);
-      const diff = (deadlineDate - now) / (1000 * 60 * 60 * 24);
-
-      if (diff < 0) {
-        deadlineHTML = `<span class="badge bg-danger ms-2">Quá hạn!</span>`;
-      } else if (diff <= 2) {
-        deadlineHTML = `<span class="badge bg-warning ms-2">Sắp đến hạn</span>`;
-      } else {
-        deadlineHTML = `<span class="badge bg-info ms-2">${todo.deadline}</span>`;
-      }
+    let deadlineHTML="";
+    if(todo.deadline){
+      const now=new Date(), d=new Date(todo.deadline);
+      const diff=(d-now)/(1000*60*60*24);
+      if(diff<0) deadlineHTML=`<span class="badge bg-danger ms-2">Quá hạn!</span>`;
+      else if(diff<=2) deadlineHTML=`<span class="badge bg-warning ms-2">Sắp đến hạn</span>`;
+      else deadlineHTML=`<span class="badge bg-info ms-2">${todo.deadline}</span>`;
     }
 
-    li.innerHTML = `
+    li.innerHTML=`
       <span class="${todo.completed ? 'completed' : ''}">
         ${todo.text} ${deadlineHTML}
       </span>
       <div class="d-flex gap-2">
-        <button class="btn btn-sm btn-outline-primary" onclick="editTodo(${index})">✏️</button>
-        <button class="btn btn-sm btn-outline-success" onclick="toggleComplete(${index})">✔️</button>
-        <button class="btn btn-sm btn-outline-danger" onclick="removeTodo(${index})">🗑️</button>
-      </div>
-    `;
-
-    if (todo.completed) {
-      completedList.appendChild(li);
-    } else {
-      todoList.appendChild(li);
-    }
+        <button class="btn btn-sm btn-outline-primary" onclick="editTodo(${i})">✏️</button>
+        <button class="btn btn-sm btn-outline-success" onclick="toggleComplete(${i})">
+          ${todo.completed ? "❎" : "✔️"}
+        </button>
+        <button class="btn btn-sm btn-outline-danger" onclick="removeTodo(${i})">🗑️</button>
+      </div>`;
+    (todo.completed ? completedList : todoList).appendChild(li);
   });
 
   updateCount();
-  localStorage.setItem("todos", JSON.stringify(todos));
+  saveTodos();
 }
 
-// Render lịch sử
-function renderHistory() {
-  const historyList = document.getElementById("history-list");
-  if (!historyList) return;
-  historyList.innerHTML = "";
 
-  history.forEach((item, index) => {
-    // chỉ giữ Thêm và Xoá
-    if (item.action === "Thêm" || item.action === "Xoá") {
-      const li = document.createElement("li");
-      li.className = "list-group-item d-flex justify-content-between align-items-center";
+/* ---- History ---- */
+function addHistory(action,text,data=null){
+  const time=new Date().toLocaleString("vi-VN");
+  history.unshift({action,text,data,time});
+  if(history.length>30) history.pop();
+  saveHistory(); renderHistory();
+}
 
-      li.innerHTML = `
+function renderHistory(){
+  const list=document.getElementById("history-list");
+  if(!list) return;
+  list.innerHTML="";
+  history.forEach((item,idx)=>{
+    if (item.action === "Xoá") {
+      const li=document.createElement("li");
+      li.className="list-group-item d-flex justify-content-between align-items-center";
+      li.innerHTML=`
         <div>
-          <strong>[${item.action}]</strong> ${item.text} 
-          <br><small>${item.time}</small>
+          <strong>[${item.action}]</strong> ${item.text}<br>
+          <small>${item.time}</small>
         </div>
-        ${item.action === "Xoá" && item.data 
-          ? `<button class="btn btn-sm btn-outline-secondary" onclick="restoreFromHistory(${index})">↩️</button>` 
-          : ""}
+        ${item.action==="Xoá" && item.data
+            ? `<button class="btn btn-sm btn-outline-secondary" onclick="restoreFromHistory(${idx})">↩️</button>`:""}
       `;
-
-      historyList.appendChild(li);
+      list.appendChild(li);
     }
   });
 }
 
-// Ghi lịch sử
-function addHistory(action, text, data = null) {
-  const time = new Date().toLocaleString("vi-VN");
-  history.unshift({ action, text, data, time });
-  if (history.length > 20) history.pop();
-  localStorage.setItem("history", JSON.stringify(history));
-  renderHistory();
-}
-
-// Khôi phục từ lịch sử
-function restoreFromHistory(index) {
-  const item = history[index];
-  if (item && item.data) {
-    todos.push(item.data);
+function restoreFromHistory(idx){
+  const it=history[idx];
+  if(it && it.data){
+    todos.push(it.data);
     renderTodos();
-    addHistory("Khôi phục", item.text);
+    addHistory("Khôi phục",it.text);
   }
 }
 
-// Thêm việc
-function addTodo() {
-  const input = document.getElementById("todo-input");
-  const deadlineInput = document.getElementById("todo-deadline");
-  const value = input.value.trim();
-  const deadline = deadlineInput ? deadlineInput.value : "";
-
-  if (value === "") return;
-
-  const newTodo = { text: value, completed: false, deadline: deadline };
-  todos.push(newTodo);
-  addHistory("Thêm", value, newTodo);
-
-  input.value = "";
-  if (deadlineInput) deadlineInput.value = "";
+/* ---- CRUD ---- */
+function addTodo(){
+  const txt=document.getElementById("todo-input");
+  const dl=document.getElementById("todo-deadline");
+  const v=txt.value.trim(), deadline=dl.value;
+  if(!v) return;
+  const todo={text:v,completed:false,deadline};
+  todos.push(todo);
+  addHistory("Thêm",v,todo);
+  txt.value=""; dl.value="";
   renderTodos();
 }
 
-// Hoàn thành
-function toggleComplete(index) {
-  todos[index].completed = !todos[index].completed;
+function toggleComplete(i){
+  todos[i].completed=!todos[i].completed;
   renderTodos();
 }
 
-// Sửa (mở modal)
-function editTodo(index) {
-  editIndex = index;
-  const todo = todos[index];
-
-  document.getElementById("edit-text").value = todo.text;
-  document.getElementById("edit-deadline").value = todo.deadline || "";
-
-  const modal = new bootstrap.Modal(document.getElementById("editModal"));
-  modal.show();
+function editTodo(i){
+  editIndex=i;
+  document.getElementById("edit-text").value=todos[i].text;
+  document.getElementById("edit-deadline").value=todos[i].deadline||"";
+  new bootstrap.Modal("#editModal").show();
 }
 
-// Lưu chỉnh sửa
-function saveEdit() {
-  if (editIndex === null) return;
-
-  const newText = document.getElementById("edit-text").value.trim();
-  const newDeadline = document.getElementById("edit-deadline").value;
-
-  if (newText === "") return;
-
-  todos[editIndex].text = newText;
-  todos[editIndex].deadline = newDeadline;
-
-  addHistory("Sửa", `${newText}`, { ...todos[editIndex] });
+function saveEdit(){
+  if(editIndex===null) return;
+  const t=document.getElementById("edit-text").value.trim();
+  const d=document.getElementById("edit-deadline").value;
+  if(!t) return;
+  todos[editIndex].text=t;
+  todos[editIndex].deadline=d;
+  addHistory("Sửa",t,{...todos[editIndex]});
   renderTodos();
-
-  const modalEl = document.getElementById("editModal");
-  const modal = bootstrap.Modal.getInstance(modalEl);
-  modal.hide();
-
-  editIndex = null;
+  bootstrap.Modal.getInstance(document.getElementById("editModal")).hide();
+  editIndex=null;
 }
 
-// Xóa 1 việc
-function removeTodo(index) {
-  addHistory("Xoá", todos[index].text, todos[index]);
-  todos.splice(index, 1);
-  renderTodos();
+function removeTodo(i){
+  addHistory("Xoá",todos[i].text,todos[i]);
+  todos.splice(i,1); renderTodos();
 }
 
-// Xóa hết
-function clearAll() {
-  if (confirm("Bạn có chắc muốn xoá tất cả?")) {
-    todos.forEach(t => addHistory("Xoá tất cả", t.text, t));
-    todos = [];
-    renderTodos();
+function clearAll(){
+  if(confirm("Bạn có chắc muốn xoá tất cả?")){
+    todos.forEach(t=>addHistory("Xoá tất cả",t.text,t));
+    todos=[]; renderTodos();
   }
 }
 
-// Đếm việc còn lại
-function updateCount() {
-  const count = todos.filter(t => !t.completed).length;
-  document.getElementById("remaining-count").innerText = `Còn ${count} việc chưa làm`;
+/* ---- Misc ---- */
+function updateCount(){
+  const c=todos.filter(t=>!t.completed).length;
+  document.getElementById("remaining-count").textContent=`Còn ${c} việc chưa làm`;
 }
 
-// Đổi theme
-function toggleDarkMode() {
+function toggleDarkMode(){
   document.body.classList.toggle("dark-mode");
-  const btn = document.getElementById("theme-toggle");
-
-  if (document.body.classList.contains("dark-mode")) {
-    btn.textContent = "☀";
-    localStorage.setItem("theme", "dark");
-  } else {
-    btn.textContent = "🌙";
-    localStorage.setItem("theme", "light");
-  }
+  const b=document.getElementById("theme-toggle");
+  b.textContent=document.body.classList.contains("dark-mode")?"☀":"🌙";
+  localStorage.setItem("theme",document.body.classList.contains("dark-mode")?"dark":"light");
 }
 
-// Load
-window.onload = function() {
-  const savedTheme = localStorage.getItem("theme");
-  const btn = document.getElementById("theme-toggle");
-
-  if (savedTheme === "dark") {
-    document.body.classList.add("dark-mode");
-    btn.textContent = "☀";
-  } else {
-    btn.textContent = "🌙";
-  }
-
-  setTimeout(() => {
-    document.body.classList.remove("no-transition");
-  }, 50);
-
+/* ---- Init ---- */
+window.onload=()=>{
+  const th=localStorage.getItem("theme");
+  if(th==="dark") {document.body.classList.add("dark-mode");document.getElementById("theme-toggle").textContent="☀";}
+  setTimeout(()=>document.body.classList.remove("no-transition"),50);
+  cleanupHistory();
   renderTodos();
   renderHistory();
 };
 
-// Enter để thêm
-document.getElementById("todo-input").addEventListener("keydown", function (event) {
-  if (event.key === "Enter") {
-    addTodo();
-  }
+document.getElementById("todo-input").addEventListener("keydown",e=>{
+  if(e.key==="Enter") addTodo();
 });
