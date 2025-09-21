@@ -5,6 +5,13 @@ body {
   color: black;
 }
 
+body,
+.card,
+.list-group-item {
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+
 /* Fade khi đổi theme */
 body.fade-transition {
   opacity: 0;
@@ -94,12 +101,26 @@ body.dark-mode .list-group-item {
   border-color: #aaaaaa;
 }
 
+.badge.bg-danger {
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+
 /* Khoảng cách giữa các nút */
 .list-group-item .btn {
   margin-left: 6px;
+  transition: transform 0.2s ease;
 }
 .list-group-item .btn:first-child {
   margin-left: 0;
+}
+.list-group-item .btn:hover {
+  transform: scale(1.15);
 }
 
 /* Tắt transition khi reload */
@@ -114,4 +135,29 @@ body.dark-mode .list-group-item {
 }
 html {
   overflow-y: scroll;
+}
+
+.todo-remove {
+  animation: fadeOut 0.3s forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}
+
+
+/* Animation rung khi sắp đến hạn */
+.badge.bg-warning {
+  animation: shake 0.6s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-2px); }
+  50%  { transform: translateX(2px); }
+  75%  { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
 }
