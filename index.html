@@ -16,7 +16,17 @@
           <!-- Header -->
           <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
             <h3>📋 To-Do List</h3>
-            <button id="theme-toggle" class="btn btn-sm btn-secondary" onclick="toggleDarkMode()">🌙</button>
+            <div class="dropdown">
+              <button id="theme-toggle" class="btn btn-sm btn-secondary dropdown-toggle" 
+                      type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                ☀
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" onclick="setTheme('light')">☀ Light</a></li>
+                <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">🌙 Dark</a></li>
+                <li><a class="dropdown-item" href="#" onclick="setTheme('clear')">✨ Clear</a></li>
+              </ul>
+            </div>
           </div>
 
           <!-- Input + Tag + Filter + Search -->

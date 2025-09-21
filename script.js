@@ -17,7 +17,7 @@ function cleanupHistory() {
   saveHistory();
 }
 
-// ==== Render Functions ====
+// ==== Render ====
 function renderTodos() {
   const todoList = document.getElementById("todo-list");
   const doneList = document.getElementById("completed-list");
@@ -34,7 +34,7 @@ function renderTodos() {
     li.className = "list-group-item d-flex justify-content-between align-items-center todo-item";
     li.dataset.index = idx;
 
-    // Badge for deadline
+    // Deadline badge
     let badge = "";
     if (todo.deadline) {
       const now = new Date(), d = new Date(todo.deadline);
@@ -66,10 +66,10 @@ function renderTodos() {
   updateCount();
   updateProgress();
   saveTodos();
-  initDragDrop(); // Re-init drag & drop after render
+  initDragDrop();
 }
 
-// History
+// ==== History (log xoá) ====
 function addHistory(action, text, data=null) {
   if (action === "Xoá") {
     history.unshift({ action, text, data, time: new Date().toISOString() });
@@ -166,7 +166,6 @@ function updateCount(){
   const c = todos.filter(t=>!t.completed).length;
   document.getElementById("remaining-count").textContent = `Còn ${c} việc chưa làm`;
 }
-
 function updateProgress(){
   const total = todos.length;
   const completed = todos.filter(t=>t.completed).length;
@@ -176,22 +175,53 @@ function updateProgress(){
   bar.textContent = percent+"%";
 }
 
-// Dark Mode
-function toggleDarkMode(){
-  document.body.classList.toggle("dark-mode");
-  document.getElementById("theme-toggle").textContent = document.body.classList.contains("dark-mode") ? "☀" : "🌙";
-  localStorage.setItem("theme", document.body.classList.contains("dark-mode")?"dark":"light");
+// ==== Theme ====
+function setTheme(mode) {
+  document.body.classList.remove("dark-mode", "glass-mode");
+
+  if (mode === "light") {
+    localStorage.setItem("theme", "light");
+    document.getElementById("theme-toggle").textContent = "☀";
+  } else if (mode === "dark") {
+    document.body.classList.add("dark-mode");
+    localStorage.setItem("theme", "dark");
+    document.getElementById("theme-toggle").textContent = "🌙";
+  } else if (mode === "clear") {
+    let current = localStorage.getItem("theme") || "light";
+    if (current.includes("dark")) {
+      document.body.classList.add("dark-mode", "glass-mode");
+      localStorage.setItem("theme", "dark-clear");
+      document.getElementById("theme-toggle").textContent = "✨";
+    } else {
+      document.body.classList.add("glass-mode");
+      localStorage.setItem("theme", "light-clear");
+      document.getElementById("theme-toggle").textContent = "✨";
+    }
+  }
+}
+function applyTheme(savedTheme) {
+  document.body.classList.remove("dark-mode", "glass-mode");
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+    document.getElementById("theme-toggle").textContent = "🌙";
+  } else if (savedTheme === "dark-clear") {
+    document.body.classList.add("dark-mode","glass-mode");
+    document.getElementById("theme-toggle").textContent = "✨";
+  } else if (savedTheme === "light-clear") {
+    document.body.classList.add("glass-mode");
+    document.getElementById("theme-toggle").textContent = "✨";
+  } else {
+    document.getElementById("theme-toggle").textContent = "☀";
+  }
 }
 
-// Toast Notification
+// ==== Toast + Deadline ====
 function showToast(msg){
   const toastEl = document.getElementById("deadline-toast");
   document.getElementById("toast-message").textContent = msg;
   const bsToast = new bootstrap.Toast(toastEl);
   bsToast.show();
 }
-
-// Check deadlines on load
 function checkDeadlines(){
   todos.forEach(todo=>{
     if(!todo.completed && todo.deadline){
@@ -201,18 +231,9 @@ function checkDeadlines(){
     }
   });
 }
+setInterval(checkDeadlines, 60*1000);
 
-// Event Listeners
-document.getElementById("todo-input").addEventListener("keydown", e=>{
-  if(e.key==="Enter") addTodo();
-});
-document.getElementById("todo-deadline").addEventListener("keydown", e=>{
-  if(e.key==="Enter") addTodo();
-});
-document.getElementById("filter-todo").addEventListener("change", renderTodos);
-document.getElementById("search-todo").addEventListener("input", renderTodos);
-
-// Drag & Drop
+// ==== DragDrop ====
 function initDragDrop(){
   const lists = [document.getElementById("todo-list"), document.getElementById("completed-list")];
   lists.forEach(list=>{
@@ -233,12 +254,16 @@ function initDragDrop(){
   });
 }
 
-// Init
+// ==== Init ====
 window.onload = ()=>{
-  if(localStorage.getItem("theme")==="dark"){
-    document.body.classList.add("dark-mode");
-    document.getElementById("theme-toggle").textContent="☀";
+  let savedTheme = localStorage.getItem("theme");
+  if (!savedTheme) {
+    const hour = new Date().getHours();
+    savedTheme = (hour >= 18 || hour < 6) ? "dark" : "light";
+    localStorage.setItem("theme", savedTheme);
   }
+  applyTheme(savedTheme);
+
   setTimeout(()=>document.body.classList.remove("no-transition"),50);
   cleanupHistory();
   renderTodos();
