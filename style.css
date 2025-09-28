@@ -1,115 +1,199 @@
+/* ==== Body & theme ==== */
 body {
   font-family: 'Poppins', sans-serif;
   transition: background-color .3s, color .3s;
   background: #fff;
   color: #000;
 }
+
 body, .card, .list-group-item {
-  transition: background-color .4s ease, color .4s ease, transform .3s ease, box-shadow .3s ease;
-}
-body.dark-mode { background:#121212 !important; color:#fff !important; }
-body.dark-mode .card { background:#1e1e1e; color:#fff; }
-body.dark-mode .list-group-item { background:#2a2a2a; color:#fff; }
-
-/* Clear (Glass) */
-body.glass-mode .card,
-body.glass-mode .list-group-item {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
-  color: #fff;
+  transition: background-color .4s ease, color .4s ease;
 }
 
-/* Sections */
+body.dark-mode {
+  background: #121212 !important;
+  color: #fff !important;
+}
+body.dark-mode .card {background:#1e1e1e;color:#fff;}
+body.dark-mode .list-group-item {background:#2a2a2a;color:#fff;}
+
+/* ==== Section ==== */
 #todo-section, #completed-section {
   border-radius:10px;
   padding:15px;
   margin-bottom:20px;
   border:2px dashed #007bff;
 }
-#completed-section { border-color:#28a745; }
-body.dark-mode #todo-section { border-color:#0d6efd; }
-body.dark-mode #completed-section { border-color:#1db954; }
+#completed-section {border-color:#28a745;}
+.dark-mode #todo-section {border-color:#0d6efd;}
+.dark-mode #completed-section {border-color:#1db954;}
 
-.search-input {
-  max-width: 130px;   /* Giới hạn chiều rộng */
-  flex: 0 0 auto;     /* Không cho nó giãn ra */
-}
-
-/* List Items */
+/* ==== Item ==== */
 li.todo-item {
   opacity:0;
-  transform:translateY(20px);
-  animation:fadeSlideIn .4s cubic-bezier(.68,-0.55,.27,1.55) forwards;
+  transform:translateY(10px);
+  animation:fadeSlideIn .4s ease forwards;
   background-clip:padding-box;
-  transition:background-color .35s, transform .35s, box-shadow .35s;
+  transition:background-color .35s cubic-bezier(.4,0,.2,1),
+             transform .35s cubic-bezier(.4,0,.2,1),
+             box-shadow .35s cubic-bezier(.4,0,.2,1);
+  border-radius:0;
 }
+
 li.todo-item:hover {
   background:rgba(0,123,255,.05)!important;
-  transform:scale(1.03) translateY(-2px);
-  box-shadow:0 8px 20px rgba(0,0,0,.08);
+  transform:scale(1.02) translateY(-1px);
+  box-shadow:0 6px 18px rgba(0,0,0,.06);
   cursor:pointer;
 }
 body.dark-mode li.todo-item:hover {
   background:rgba(255,255,255,.06)!important;
-  box-shadow:0 8px 20px rgba(255,255,255,.05);
+  box-shadow:0 6px 18px rgba(255,255,255,.05);
 }
 
-/* Rounded corners */
-#todo-list .todo-item:first-child, #completed-list .todo-item:first-child {
+/* Bo góc đẹp */
+#todo-list .todo-item:first-child,
+#completed-list .todo-item:first-child {
   border-top-left-radius:10px;
   border-top-right-radius:10px;
 }
-#todo-list .todo-item:last-child, #completed-list .todo-item:last-child {
+#todo-list .todo-item:last-child,
+#completed-list .todo-item:last-child {
   border-bottom-left-radius:10px;
   border-bottom-right-radius:10px;
 }
-#todo-list .todo-item + .todo-item, #completed-list .todo-item + .todo-item { margin-top:1px; }
+#todo-list .todo-item + .todo-item,
+#completed-list .todo-item + .todo-item {margin-top:1px;}
 
-/* Badge */
-.badge { font-size:.75rem; padding:.25em .5em; }
-.badge.bg-danger { animation:pulse 1s infinite alternate; }
-.badge.bg-warning { animation:shake .6s infinite; }
-@keyframes pulse { from{transform:scale(1);} to{transform:scale(1.1);} }
-@keyframes shake { 0%{transform:translateX(0);}25%{transform:translateX(-2px);}50%{transform:translateX(2px);}75%{transform:translateX(-2px);}100%{transform:translateX(0);} }
+/* ==== Badge ==== */
+.badge.bg-danger {animation:pulse 1s infinite alternate;}
+@keyframes pulse {from{transform:scale(1);}to{transform:scale(1.1);}}
 
-/* Tags */
-.badge.default { background:#6c757d; }
-.badge.work { background:#0d6efd; }
-.badge.study { background:#ffc107; color:#000; }
-.badge.personal { background:#198754; }
-
-/* Buttons */
-.list-group-item .btn { margin-left:6px; transition:transform .2s ease; }
-.list-group-item .btn:first-child { margin-left:0; }
-.list-group-item .btn:hover { transform:scale(1.15); }
-
-/* History */
-#history-list { max-height:200px; overflow-y:auto; padding-right:4px; font-size:.9rem; line-height:1.3; }
-
-/* Animations */
-@keyframes fadeSlideIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
-li.todo-remove { animation: fadeSlideOut .4s forwards; }
-@keyframes fadeSlideOut { from{opacity:1;transform:translateY(0);} to{opacity:0;transform:translateY(20px);} }
-
-/* Toast */
-.toast { transition: transform .3s ease, opacity .3s ease; }
-
-/* Progress */
-.progress { height:20px; border-radius:10px; overflow:hidden; margin-bottom:10px; }
-.progress-bar { transition: width .5s ease; }
-
-#progress-text {
-  font-size: 0.9rem;
-  color: #555;
-}
-body.dark-mode #progress-text {
-  color: #ddd;
+.badge.bg-warning {animation:shake .6s ease-in-out infinite;}
+@keyframes shake {
+  0%{transform:translateX(0);}
+ 25%{transform:translateX(-2px);}
+ 50%{transform:translateX(2px);}
+ 75%{transform:translateX(-2px);}
+100%{transform:translateX(0);}
 }
 
+/* ==== Buttons ==== */
+.list-group-item .btn {
+  margin-left:6px;
+  transition:transform .2s ease;
+}
+.list-group-item .btn:first-child {margin-left:0;}
+.list-group-item .btn:hover {transform:scale(1.15);}
+
+/* ==== History ==== */
+#history-list {max-height:200px;overflow-y:auto;padding-right:4px;}
+#history-list .list-group-item {font-size:.9rem;padding:6px 10px;line-height:1.3;}
 
 /* Misc */
-.no-transition, .no-transition * { transition:none!important; }
+.no-transition, .no-transition * {transition:none!important;}
 :root{scrollbar-gutter:stable both-edges;}
 html{overflow-y:scroll;}
+@keyframes fadeSlideIn {from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* ==== Progress bar ==== */
+.progress-bar {
+  transition: width .5s ease-in-out;
+}
+
+/* ===== Fix modal white strip / inconsistent colors across themes ===== */
+:root {
+  --modal-bg-light: #ffffff;
+  --modal-bg-clear: rgba(255,255,255,0.88);
+  --modal-bg-dark:  #1e1e1e;
+  --modal-text-light: #212529;
+  --modal-text-dark:  #f1f1f1;
+  --modal-border: rgba(0,0,0,0.06);
+}
+
+/* Ensure backdrop */
+.modal-backdrop.show {
+  background-color: rgba(0,0,0,0.35);
+}
+
+/* For Clear theme: lighter backdrop */
+body.clear-mode .modal-backdrop.show {
+  background-color: rgba(255,255,255,0.12) !important;
+  backdrop-filter: blur(6px) !important;
+  -webkit-backdrop-filter: blur(6px) !important;
+}
+
+/* Modal container */
+.modal-content {
+  background-clip: padding-box !important;
+  overflow: hidden !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--modal-border) !important;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  transition: background-color .35s ease, color .35s ease, border-color .35s ease;
+}
+
+/* Light theme modal */
+body.light-mode .modal-content {
+  background-color: var(--modal-bg-light) !important;
+  color: var(--modal-text-light) !important;
+  border-color: rgba(0,0,0,0.06) !important;
+}
+
+/* Clear theme modal */
+body.clear-mode .modal-content {
+  background: rgba(255, 255, 255, 0.3) !important;
+  color: #212529 !important;
+  border: 1px solid rgba(255,255,255,0.4);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* Dark theme modal */
+body.dark-mode .modal-content {
+  background: #1e1e1e !important;
+  color: #f1f1f1 !important;
+  border: 1px solid rgba(255,255,255,0.08); 
+}
+
+/* Modal header/footer */
+.modal-header,
+.modal-footer {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  border-top: none;
+}
+.modal-header .modal-title {
+  color: inherit !important;
+  font-weight: 600;
+}
+
+/* Form controls inside modal */
+.modal-content .form-control,
+.modal-content .form-select {
+  background-color: transparent;
+  color: inherit;
+  border: 1px solid rgba(0,0,0,0.09);
+}
+
+/* Dark-mode stronger input contrast */
+body.dark-mode .modal-content .form-control,
+body.dark-mode .modal-content .form-select {
+  background-color: #2a2a2a !important;
+  color: var(--modal-text-dark) !important;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+/* Placeholder fix */
+.modal-content .form-control::placeholder {
+  color: rgba(100,100,100,0.7) !important;
+}
+body.dark-mode .modal-content .form-control::placeholder {
+  color: rgba(200,200,200,0.5) !important;
+}
+
+/* Close button always visible */
+.modal-header .btn-close {
+  filter: none !important;
+  opacity: 0.9;
+}

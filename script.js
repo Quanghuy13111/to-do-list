@@ -275,3 +275,9 @@ window.onload = ()=>{
   renderHistory();
   checkDeadlines();
 };
+// ==== Hotkey Enter để thêm nhanh ====
+document.getElementById("todo-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    addTodo();
+  }
+});
