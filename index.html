@@ -1,135 +1,144 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Reminder</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>To-Do List — Fixed</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="no-transition">
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-10">
-      <div class="card shadow rounded-4">
-        <div class="card-body">
-          <!-- Header -->
-          <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-            <h3>📋 Reminder</h3>
-            <div class="dropdown">
-              <button id="theme-toggle" class="btn btn-sm btn-secondary dropdown-toggle" 
-                      type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                ☀
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#" onclick="setTheme('light')">☀ Light</a></li>
-                <li><a class="dropdown-item" href="#" onclick="setTheme('dark')">🌙 Dark</a></li>
-                <li><a class="dropdown-item" href="#" onclick="setTheme('clear')">✨ Clear</a></li>
-              </ul>
-            </div>
-          </div>
+<body class="no-transition light-mode">
+  <div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-md-10">a
+        <div class="card shadow-sm rounded-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h3 class="m-0">📋 To-Do List</h3>
 
-          <!-- Input + Tag + Filter + Search -->
-          <div class="input-group mb-3 flex-wrap">
-            <input type="text" id="todo-input" class="form-control rounded-start-pill" placeholder="Nhập việc cần làm...">
-            <input type="date" id="todo-deadline" class="form-control" style="max-width: 180px;">
-            <select id="todo-tag" class="form-select" style="max-width: 150px;">
+              <!-- Theme dropdown -->
+              <div class="dropdown">
+                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                        id="themeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  ✨ Theme
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
+                  <li><button class="dropdown-item" type="button" onclick="setTheme('light')">🌙 Light</button></li>
+                  <li><button class="dropdown-item" type="button" onclick="setTheme('clear')">✨ Clear (Glass)</button></li>
+                  <li><button class="dropdown-item" type="button" onclick="setTheme('dark')">☀ Dark</button></li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Input -->
+            <div class="input-group mb-3 align-items-center">
+              <input type="text" id="todo-input" class="form-control rounded-start-pill" placeholder="Nhập việc cần làm...">
+              <input type="date" id="todo-deadline" class="form-control" style="max-width:170px;">
+              <select id="todo-tag" class="form-select" style="max-width:130px;">
+                <option value="default">Mặc định</option>
+                <option value="work">Công việc</option>
+                <option value="study">Học tập</option>
+                <option value="personal">Cá nhân</option>
+              </select>
+              <button class="btn btn-primary rounded-end-pill" onclick="addTodo()">Thêm</button>
+            </div>
+
+            <!-- Filter + Search -->
+            <div class="d-flex gap-2 mb-3 flex-wrap">
+              <select id="filter-todo" class="form-select" style="max-width:160px;">
+                <option value="all">Tất cả</option>
+                <option value="pending">Chưa xong</option>
+                <option value="completed">Đã xong</option>
+              </select>
+
+              <input id="search-todo" class="form-control search-input ms-auto" type="text" placeholder="Tìm kiếm...">
+            </div>
+
+            <!-- Progress -->
+            <div class="mb-3">
+              <small id="progress-text" class="d-block text-center mb-1 fw-semibold">Tiến độ: 0/0 công việc (0%)</small>
+              <div class="progress">
+                <div id="progress-bar" class="progress-bar" role="progressbar" style="width:0%">0%</div>
+              </div>
+            </div>
+
+            <!-- Lists -->
+            <div id="todo-section" class="mb-3">
+              <h5 class="mb-2">📋 Việc cần làm</h5>
+              <ul id="todo-list" class="list-group mb-3"></ul>
+            </div>
+
+            <div id="completed-section" class="mb-3">
+              <h5 class="mb-2">✅ Đã hoàn thành</h5>
+              <ul id="completed-list" class="list-group mb-3"></ul>
+            </div>
+
+            <div id="history-section" class="mb-3">
+              <h5 class="mb-2">📜 Lịch sử</h5>
+              <ul id="history-list" class="list-group mb-3"></ul>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <small id="remaining-count">Còn 0 việc chưa làm</small>
+              <div>
+                <button class="btn btn-sm btn-outline-secondary me-2" onclick="renderHistory()">Lịch sử</button>
+                <button class="btn btn-sm btn-danger" onclick="clearAll()">Xoá tất cả</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">✏️ Sửa công việc</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="edit-text" class="form-label">Nội dung</label>
+            <input type="text" id="edit-text" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="edit-deadline" class="form-label">Deadline</label>
+            <input type="date" id="edit-deadline" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label for="edit-tag" class="form-label">Tag</label>
+            <select id="edit-tag" class="form-select">
               <option value="default">Mặc định</option>
               <option value="work">Công việc</option>
               <option value="study">Học tập</option>
               <option value="personal">Cá nhân</option>
             </select>
-            <button class="btn btn-primary rounded-end-pill" onclick="addTodo()">Thêm</button>
-            <select id="filter-todo" class="form-select ms-2" style="max-width: 180px;">
-              <option value="all">Tất cả</option>
-              <option value="pending">Chưa làm</option>
-              <option value="completed">Đã hoàn thành</option>
-            </select>
-            <input type="text" id="search-todo" class="form-control ms-2 search-input" placeholder="Tìm kiếm...">
           </div>
-
-          <!-- Progress -->
-          <div class="mb-2">
-            <small id="progress-text" class="d-block text-center mb-1 fw-semibold">
-              Tiến độ: 0 công việc
-            </small>
-            <div class="progress">
-              <div id="progress-bar" class="progress-bar" role="progressbar" style="width:0%">0%</div>
-            </div>
-          </div>
-
-
-          <!-- To-Do List -->
-          <div id="todo-section">
-            <h5 class="mb-3">📋 Việc cần làm</h5>
-            <ul id="todo-list" class="list-group mb-3"></ul>
-          </div>
-
-          <!-- Completed -->
-          <div id="completed-section">
-            <h5 class="mb-3">✅ Đã hoàn thành</h5>
-            <ul id="completed-list" class="list-group mb-3"></ul>
-          </div>
-
-          <!-- History -->
-          <div id="history-section">
-            <h5 class="mb-3">📜 Lịch sử</h5>
-            <ul id="history-list" class="list-group mb-3"></ul>
-          </div>
-
-          <div class="d-flex justify-content-between">
-            <small id="remaining-count"></small>
-            <button class="btn btn-sm btn-danger" onclick="clearAll()">Xoá tất cả</button>
-          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+          <button type="button" class="btn btn-primary" onclick="saveEdit()">Lưu</button>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Modal Sửa -->
-<div class="modal fade" id="editModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">✏️ Sửa công việc</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-3">
-          <label for="edit-text" class="form-label">Nội dung</label>
-          <input type="text" id="edit-text" class="form-control">
-        </div>
-        <div class="mb-3">
-          <label for="edit-deadline" class="form-label">Deadline</label>
-          <input type="date" id="edit-deadline" class="form-control">
-        </div>
-        <select id="edit-tag" class="form-select">
-          <option value="default">Mặc định</option>
-          <option value="work">Công việc</option>
-          <option value="study">Học tập</option>
-          <option value="personal">Cá nhân</option>
-        </select>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-        <button type="button" class="btn btn-primary" onclick="saveEdit()">Lưu</button>
+  <!-- Toast -->
+  <div class="position-fixed bottom-0 end-0 p-3" style="z-index:1050">
+    <div id="liveToast" class="toast align-items-center text-bg-primary border-0" role="alert">
+      <div class="d-flex">
+        <div class="toast-body" id="toast-msg">Đã lưu</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Đóng"></button>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Toast Notification -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
-  <div id="deadline-toast" class="toast align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="d-flex">
-      <div class="toast-body" id="toast-message">Cảnh báo deadline!</div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-    </div>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
