@@ -170,10 +170,15 @@ function updateProgress(){
   const total = todos.length;
   const completed = todos.filter(t=>t.completed).length;
   const percent = total ? Math.round((completed/total)*100) : 0;
+
   const bar = document.getElementById("progress-bar");
   bar.style.width = percent+"%";
   bar.textContent = percent+"%";
+
+  const text = document.getElementById("progress-text");
+  text.textContent = `Tiến độ: ${percent}% công việc`;
 }
+
 
 // ==== Theme ====
 function setTheme(mode) {

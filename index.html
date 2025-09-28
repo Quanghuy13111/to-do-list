@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>To-Do List</title>
+  <title>Reminder</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
@@ -15,7 +15,7 @@
         <div class="card-body">
           <!-- Header -->
           <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
-            <h3>📋 To-Do List</h3>
+            <h3>📋 Reminder</h3>
             <div class="dropdown">
               <button id="theme-toggle" class="btn btn-sm btn-secondary dropdown-toggle" 
                       type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -45,15 +45,19 @@
               <option value="pending">Chưa làm</option>
               <option value="completed">Đã hoàn thành</option>
             </select>
-            <input type="text" id="search-todo" class="form-control ms-2" placeholder="Tìm kiếm...">
+            <input type="text" id="search-todo" class="form-control ms-2 search-input" placeholder="Tìm kiếm...">
           </div>
 
           <!-- Progress -->
-          <div class="mb-3">
+          <div class="mb-2">
+            <small id="progress-text" class="d-block text-center mb-1 fw-semibold">
+              Tiến độ: 0 công việc
+            </small>
             <div class="progress">
               <div id="progress-bar" class="progress-bar" role="progressbar" style="width:0%">0%</div>
             </div>
           </div>
+
 
           <!-- To-Do List -->
           <div id="todo-section">
